@@ -5,13 +5,14 @@ export const useStage = (player, resetPlayer) => {
     const [stage, setStage] = useState(createStage())
 
     useEffect(() => {
+
         const updateStage = prevStage => {
 
             const newStage = prevStage.map(row =>
                 row.map(cell => (cell[1] === 'clear' ? [0, 'clear'] : cell))
             );
         
-            // Draw tetromino
+            // Рендер тетромино
             player.tetromino.forEach((row, y) => {
                 row.forEach((value, x) => {
                     if(value !== 0){
@@ -23,12 +24,17 @@ export const useStage = (player, resetPlayer) => {
                 })
             });
 
+            // При коллизии создавать новую тетромино
+            if(player.collided){
+                resetPlayer();
+            }
+
             return newStage;
         };
 
         setStage(prev => updateStage(prev))
 
-    }, [player]);
+    }, [player, resetPlayer]);
 
     return [stage, setStage];
 }
